@@ -19,7 +19,7 @@ class Province
 
   def self.scrape_all
     PROVINCES.each_with_index do |province, i|
-
+      next if i > 30
       page = Nokogiri::HTML(open(province.url))
 
       province.territorial_designation = page.search("span.category a.mw-redirect").text
@@ -34,76 +34,35 @@ class Province
       end
 
 
-      province.area_km_sq = page.search("tr.mergedrow")
-                              .select {|t| t.text.match(/km2/i) }
-                              .first.text.split(' ')[1]
-                              .gsub(',', '')[0..-5].to_i
+      province.area_km_sq = page.search("tr.mergedrow").select {|t| t.text.match(/km2/i) }.first.text.split(' ')[1].gsub(',', '')[0..-5].to_i
 
-      province.population = page.search("tr.mergedrow")
-                              .select {|tr| tr.text.match(/\d{3},\d{3}\n/) }
-                              .first.text.split(' ')[1]
-                              .gsub(',', '').to_i
+      province.population = page.search("tr.mergedrow").select {|tr| tr.text.match(/\d{3},\d{3}\n/) }.first.text.split(' ')[1].gsub(',', '').to_i
 
       # Consider updating to more recent GDP data:
       # http://en.wikipedia.org/wiki/List_of_Chinese_administrative_divisions_by_GDP
 
       # There is an error in the GDP listing on the Jiangxi wiki page http://en.wikipedia.org/wiki/Jiangxi
-      if province.name == "Chongqing"
-        if page.search("tr.mergedrow td")[12].text.split(' ')[2].match(/trillion/)
-          province.gdp_cny = (page.search("tr.mergedrow td")[12].text.split(' ')[1].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_cny = (page.search("tr.mergedrow td")[12].text.split(' ')[1].to_f * 1_000_000_000).to_i
-        end
-      elsif province.name == "Shanghai"
-        if page.search("tr.mergedrow td")[16].text.split(' ')[0].match(/trillion/)
-          province.gdp_cny = (page.search("tr.mergedrow td")[16].text.split(' ')[0][3..6].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_cny = (page.search("tr.mergedrow td")[16].text.split(' ')[0][3..6].to_f * 1_000_000_000).to_i
-        end
-      elsif province.name == "Tianjin"
-        if page.search("tr.mergedrow td")[14].text.split(' ')[0].match(/trillion/)
-          province.gdp_cny = (page.search("tr.mergedrow td")[14].text.split(' ')[0][3..6].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_cny = (page.search("tr.mergedrow td")[14].text.split(' ')[0][3..6].to_f * 1_000_000_000).to_i
-        end
+      
+      if %w{ Beijing Chongqing }.include?(province.name)
+        monetary_info = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.first.text.split(/\s| /)
+      elsif %w{ Shanghai Tianjin }.include?(province.name)
+        monetary_info = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.first.text.split(/\s| |cny|usd|\$/i)
+      elsif %w{ Guangdong }.include?(province.name)
+        monetary_info = page.search("tr.mergedtoprow td").select {|tr| tr.text.match(/cny/i) }.first.text.split(/\s| |\$/i)
       else
-        if page.search("tr.mergedtoprow td")[1].text.split(' ')[2].match(/trillion/) || province.name == "Jiangxi"
-          province.gdp_cny = (page.search("tr.mergedtoprow td")[1].text.split(' ')[1].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_cny = (page.search("tr.mergedtoprow td")[1].text.split(' ')[1].to_f * 1_000_000_000).to_i
-        end
+        monetary_info = page.search("tr.mergedtoprow td").select {|tr| tr.text.match(/cny/i) }.first.text.split(' ')
       end
 
-      if province.name == "Guangdong"
-        if page.search("tr.mergedtoprow td")[1].text.split(' ')[4].match(/trillion/)
-          province.gdp_usd = (page.search("tr.mergedtoprow td")[1].text.split(' ')[3].to_f * 1_000_000_000_000).to_i + 1
-        else
-          province.gdp_usd = (page.search("tr.mergedtoprow td")[1].text.split(' ')[3].to_f * 1_000_000_000).to_i + 1
-        end
-      elsif province.name == "Chongqing"
-        if page.search("tr.mergedrow td")[12].text.split(' ')[5].match(/trillion/)
-          province.gdp_usd = (page.search("tr.mergedrow td")[12].text.split(' ')[3].to_f * 1_000_000_000_000).to_i + 1
-        else
-          province.gdp_usd = (page.search("tr.mergedrow td")[12].text.split(' ')[3].to_f * 1_000_000_000).to_i + 1
-        end
-      elsif province.name == "Shanghai"
-        if page.search("tr.mergedrow td")[16].text.split(' ')[1].match(/trillion/)
-          province.gdp_usd = (page.search("tr.mergedrow td")[16].text.split(' ')[1][3..8].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_usd = (page.search("tr.mergedrow td")[16].text.split(' ')[1][3..8].to_f * 1_000_000_000).to_i
-        end
-      elsif province.name == "Tianjin"
-        if page.search("tr.mergedrow td")[14].text.split(' ')[1].match(/trillion/)
-          province.gdp_usd = (page.search("tr.mergedrow td")[14].text.split(' ')[1][4..9].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_usd = (page.search("tr.mergedrow td")[14].text.split(' ')[1][4..9].to_f * 1_000_000_000).to_i
-        end
+      if monetary_info[2].match(/trillion/)
+        province.gdp_cny = (monetary_info[1].to_f * 1_000_000_000_000).to_i
       else
-        if page.search("tr.mergedtoprow td")[1].text.split(' ')[5].match(/trillion/)
-          province.gdp_usd = (page.search("tr.mergedtoprow td")[1].text.split(' ')[4].to_f * 1_000_000_000_000).to_i
-        else
-          province.gdp_usd = (page.search("tr.mergedtoprow td")[1].text.split(' ')[4].to_f * 1_000_000_000).to_i
-        end
+        province.gdp_cny = (monetary_info[1].to_f * 1_000_000_000).to_i
+      end
+
+      if monetary_info[5].match(/trillion/)
+        province.gdp_usd = (monetary_info[4].to_f * 1_000_000_000_000).to_i
+      else
+        province.gdp_usd = (monetary_info[4].to_f * 1_000_000_000).to_i
       end
     end
   end
