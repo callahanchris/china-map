@@ -19,7 +19,7 @@ class Province
 
   def self.scrape_all
     PROVINCES.each_with_index do |province, i|
-      next if i > 30
+
       page = Nokogiri::HTML(open(province.url))
 
       province.territorial_designation = page.search("span.category a.mw-redirect").text
@@ -29,27 +29,20 @@ class Province
         province.longitude = page.search("span.longitude")[0].text
       end
 
-      province.capital = page.search("tr.mergedtoprow a")[0].text
-
-      if [1, 3].include?(i)
-        province.area_km_sq = page.search("tr.mergedrow")[10].text.split(' ')[1].gsub(',', '')[0..-5].to_i
-        province.population = page.search("tr.mergedrow")[12].text.split(' ')[1].gsub(',', '').to_i
-      elsif [5, 22, 25, 26, 29].include?(i)
-        province.area_km_sq = page.search("tr.mergedrow")[9].text.split(' ')[1].gsub(',', '')[0..-5].to_i
-        province.population = page.search("tr.mergedrow")[11].text.split(' ')[1].gsub(',', '').to_i
-      elsif [8, 11, 12, 15, 17, 20].include?(i)
-        province.area_km_sq = page.search("tr.mergedrow")[8].text.split(' ')[1].gsub(',', '')[0..-5].to_i
-        province.population = page.search("tr.mergedrow")[10].text.split(' ')[1].gsub(',', '').to_i
-      elsif [28].include?(i)
-        province.area_km_sq = page.search("tr.mergedrow")[6].text.split(' ')[1].gsub(',', '')[0..-5].to_i
-        province.population = page.search("tr.mergedrow")[8].text.split(' ')[1].gsub(',', '').to_i
-      elsif [30].include?(i)
-        province.area_km_sq = page.search("tr.mergedrow")[6].text.split(' ')[1].gsub(',', '')[0..-5].to_i
-        province.population = page.search("tr.mergedrow")[9].text.split(' ')[1].gsub(',', '').to_i
-      else
-        province.area_km_sq = page.search("tr.mergedrow")[7].text.split(' ')[1].gsub(',', '')[0..-5].to_i
-        province.population = page.search("tr.mergedrow")[9].text.split(' ')[1].gsub(',', '').to_i
+      if !%w{ Beijing Chongqing Shanghai Tianjin }.include?(province.name)
+        province.capital = page.search("tr.mergedtoprow a")[0].text
       end
+
+
+      province.area_km_sq = page.search("tr.mergedrow")
+                              .select {|t| t.text.match(/km2/i) }
+                              .first.text.split(' ')[1]
+                              .gsub(',', '')[0..-5].to_i
+
+      province.population = page.search("tr.mergedrow")
+                              .select {|tr| tr.text.match(/\d{3},\d{3}\n/) }
+                              .first.text.split(' ')[1]
+                              .gsub(',', '').to_i
 
       # Consider updating to more recent GDP data:
       # http://en.wikipedia.org/wiki/List_of_Chinese_administrative_divisions_by_GDP
@@ -114,18 +107,4 @@ class Province
       end
     end
   end
-
-  def to_json
-    hash = {}
-    self.public_methods(false).each do |meth|
-      next if meth[-1] == "=" || meth.to_s == "to_json" || meth.to_s == "url"
-      hash[meth.to_s] = self.send(meth)
-    end
-    hash.to_json
-  end
-
-  # def self.json_feed
-  #   {"Provinces" => all.map(&:to_json) }.to_json
-  # end
-
 end

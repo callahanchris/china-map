@@ -18,7 +18,7 @@ class WikiScraper
     end.compact
   end
 
-  #Provinces go up to 21, skip 22, others go up to 34
+  # Provinces go up to 21, skip 22, others go up to 34
   def make_provinces
     # province_links[0..21].each do |url|
     province_links.each_with_index do |url, i|
