@@ -13,6 +13,7 @@
       $( '#map' ).vectorMap({
         map: 'cn_merc_en',
         backgroundColor: '#eee',
+
         regionStyle: {
           initial: {
             fill: 'white',
@@ -24,16 +25,28 @@
           hover: {
             fill: 'red',
             "fill-opacity": 1,
-            // border: ''
           },
         },
 
-        onRegionClick: function( event, data ) {
-          console.log(data);
-        }
+        onRegionHover: function( event, code ) {
 
+        },
+
+        onRegionClick: function( event, code ) {
+          console.log(code);
+        },
       });
+
+      // $( '#map-events' ).vectorMap({
+      //   map: 'cn_merc_en',
+      //   onLabelShow: function( event, label, code ) {
+      //     label.text('hi');
+      //   }
+      // });
+
     });
+
+
   </script>
 
 </body>
