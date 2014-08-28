@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  url: MyString
+  territorial_designation: MyString
+  latitude: MyString
+  longitude: MyString
+  capital: MyString
+  area_km_sq: 1
+  population: 1
+  gdp_cny: 1
+  gdp_usd: 1
+
+two:
+  name: MyString
+  url: MyString
+  territorial_designation: MyString
+  latitude: MyString
+  longitude: MyString
+  capital: MyString
+  area_km_sq: 1
+  population: 1
+  gdp_cny: 1
+  gdp_usd: 1

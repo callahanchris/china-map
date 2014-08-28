@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-class WikiScraper
+class ChinaScraper
   attr_accessor :province_links
 
   def initialize
@@ -29,13 +29,13 @@ class WikiScraper
     # province_links[0..21].each do |url|
     province_links.each_with_index do |url, i|
       next if i == 22
-      Province.new(url)
+      Province.create(url)
     end
   end
 end
 
 
-class Province
+class ProvinceScraper
   attr_accessor :url, :name, :latitude, :longitude, :capital, 
                 :area_km_sq, :population, :gdp_cny, :gdp_usd,
                 :territorial_designation
