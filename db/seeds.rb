@@ -12,6 +12,7 @@ class ChinaScraper
   def initialize
     scrape_index
     make_provinces
+    scrape_all_provinces
   end
 
   def scrape_index
@@ -24,36 +25,16 @@ class ChinaScraper
     end.compact
   end
 
-  # Provinces go up to 21, skip 22, others go up to 34
+  # Provinces go up to 21, skip 22 (Taiwan), others go up to 34
   def make_provinces
-    # province_links[0..21].each do |url|
     province_links.each_with_index do |url, i|
       next if i == 22
       Province.create(url)
     end
   end
-end
 
-
-class ProvinceScraper
-  attr_accessor :url, :name, :latitude, :longitude, :capital, 
-                :area_km_sq, :population, :gdp_cny, :gdp_usd,
-                :territorial_designation
-
-  PROVINCES = []
-
-  def initialize(url)
-    self.url = url
-    self.name = url[29..-1].split('_').join(' ')
-    PROVINCES << self
-  end
-
-  def self.all
-    PROVINCES
-  end
-
-  def self.scrape_all
-    PROVINCES.each_with_index do |province, i|
+  def scrape_all_provinces
+    Province.all.each do |province|
       page = Nokogiri::HTML(open(province.url))
 
       if province.name == "Guangxi"
@@ -122,5 +103,9 @@ class ProvinceScraper
         end
       end
     end
+
+    province.save
   end
 end
+
+
