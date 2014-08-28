@@ -1,10 +1,9 @@
 class Province < ActiveRecord::Base
 
-  def initialize(url)
-    self.url = url
+  before_create :assign_name_from_url
+
+  def assign_name_from_url
     self.name = url[29..-1].split('_').join(' ')
-    self.save
-    super
   end
 
 end

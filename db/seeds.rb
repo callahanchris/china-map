@@ -1,10 +1,4 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+require 'open-uri'
 
 class ChinaScraper
   attr_accessor :province_links
@@ -16,6 +10,7 @@ class ChinaScraper
   end
 
   def scrape_index
+    puts "Scraping the China page..."
     china_main_page = Nokogiri::HTML(open("http://en.wikipedia.org/wiki/China"))
     provinces = china_main_page.search("table.navbox tr td ul li a")[0..34]
     
@@ -29,17 +24,15 @@ class ChinaScraper
   def make_provinces
     province_links.each_with_index do |url, i|
       next if i == 22
-      Province.create(url)
+      province = Province.new.tap {|p| p.url = url }
+      province.save
     end
   end
 
   def scrape_all_provinces
     Province.all.each do |province|
+      puts "Scraping #{province.name}..."
       page = Nokogiri::HTML(open(province.url))
-
-      if province.name == "Guangxi"
-        binding.pry
-      end
 
       if %w{ Hong\ Kong Macau }.include?(province.name)
         province.territorial_designation = page.search("tr td a").find {|a| a.text.match(/special/i) }.text.split(" of ").first
@@ -69,7 +62,6 @@ class ChinaScraper
       # Consider updating to more recent GDP data:
       # http://en.wikipedia.org/wiki/List_of_Chinese_administrative_divisions_by_GDP
 
-      # There is an error in the GDP listing on the Jiangxi wiki page http://en.wikipedia.org/wiki/Jiangxi
       
       if %w{ Beijing Chongqing }.include?(province.name)
         monetary_info = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| /)
@@ -90,6 +82,7 @@ class ChinaScraper
           province.gdp_usd = (monetary_info[1].to_f * 1_000_000_000).to_i
         end
       else
+      # There is an error in the GDP listing on the Jiangxi wiki page http://en.wikipedia.org/wiki/Jiangxi
         if monetary_info[2].match(/trillion/) || province.name == "Jiangxi"
           province.gdp_cny = (monetary_info[1].to_f * 1_000_000_000_000).to_i
         else
@@ -102,10 +95,10 @@ class ChinaScraper
           province.gdp_usd = (monetary_info[4].to_f * 1_000_000_000).to_i
         end
       end
-    end
 
-    province.save
+      province.save
+    end
   end
 end
 
-
+ChinaScraper.new
