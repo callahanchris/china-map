@@ -11,6 +11,7 @@ class CreateProvinces < ActiveRecord::Migration
       t.integer :population
       t.integer :gdp_cny
       t.integer :gdp_usd
+      t.string :jvector_code
 
       t.timestamps
     end
