@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20140828153845) do
     t.integer  "population"
     t.integer  "gdp_cny"
     t.integer  "gdp_usd"
+    t.string   "jvector_code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
