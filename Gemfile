@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 
-gem 'nokogiri'
+gem 'nokogiri', '1.6.1'
 gem 'pry'
 gem 'pry-rails'
 
