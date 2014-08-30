@@ -1,36 +1,42 @@
-$( function(){
-  $( '#map' ).vectorMap({
-    map: 'cn_merc_en',
-    backgroundColor: '#eee',
+$( function() {
+  $.getJSON( '/provinces', function( data ) {
+    var population = {},
+        gdpUsd = {};
 
-    regionStyle: {
-      initial: {
-        fill: 'white',
-        "fill-opacity": 1,
-        stroke: 'black',
-        "stroke-width": 1,
-        "stroke-opacity": 1
+    for ( var i = 0; i < data.length; i++ ) {
+      population[data[i]["jvector_code"]] = data[i]["population"];
+      gdpUsd[data[i]["jvector_code"]] = data[i]["gdp_usd"];
+    }
+
+    $( '#map' ).vectorMap({
+      map: 'cn_merc_en',
+      backgroundColor: '#eee',
+      series: {
+        regions: [{
+          values: population,
+          scale: ['#FFFFFF', '#FF0000'],
+          max: 100000000
+        }]
       },
-      hover: {
-        fill: 'red',
-        "fill-opacity": 1,
+      markerStyle: {
+        initial: {
+          fill: '#FFFF00',
+          stroke: '#383f47'
+        }
       },
-    },
+      markers: {
+        "HK": {latLng: [22.396428, 114.109497], name: 'Hong Kong'},
+        "MO": {latLng: [22.198745, 113.543873], name: 'Macau'}
+      },
 
-    onRegionHover: function( event, code ) {
-
-    },
-
-    onRegionClick: function( event, code ) {
-      console.log(code);
-    },
+      onRegionClick: function( event, code ) {
+        for( var i = 0; i < data.length; i++ ) {
+          var obj = data[i];
+          if ( code === obj.jvector_code ) {
+            window.location = '/provinces/' + obj.id;
+          }
+        }
+      }
+    });
   });
-
-  // $( '#map-events' ).vectorMap({
-  //   map: 'cn_merc_en',
-  //   onLabelShow: function( event, label, code ) {
-  //     label.text('hi');
-  //   }
-  // });
-
 });

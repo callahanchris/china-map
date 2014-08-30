@@ -14,5 +14,6 @@
 //= require jquery_ujs
 //= require jquery-jvectormap-1.2.2.min
 //= require jquery-jvectormap-cn-merc-en
+//= require map
 //= require turbolinks
 //= require_tree .
