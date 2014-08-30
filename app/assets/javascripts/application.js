@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require twitter/bootstrap
 //= require jquery-jvectormap-1.2.2.min
 //= require jquery-jvectormap-cn-merc-en
 //= require map
