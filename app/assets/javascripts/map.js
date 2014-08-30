@@ -1,11 +1,13 @@
 $( function() {
   $.getJSON( '/provinces', function( data ) {
     var population = {},
-        gdpUsd = {};
+        gdpUsd = {},
+        provinceNames = {};
 
     for ( var i = 0; i < data.length; i++ ) {
       population[data[i]["jvector_code"]] = data[i]["population"];
       gdpUsd[data[i]["jvector_code"]] = data[i]["gdp_usd"];
+      provinceNames[data[i]["jvector_code"]] = data[i]["name"];
     }
 
     $( '#map' ).vectorMap({
@@ -25,15 +27,26 @@ $( function() {
         }
       },
       markers: {
-        "HK": {latLng: [22.396428, 114.109497], name: 'Hong Kong'},
-        "MO": {latLng: [22.198745, 113.543873], name: 'Macau'}
+        "Hong Kong": {latLng: [22.396428, 114.109497], name: 'Hong Kong'},
+        "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
       },
 
       onRegionClick: function( event, code ) {
-        for( var i = 0; i < data.length; i++ ) {
+        for ( var i = 0; i < data.length; i++ ) {
           var obj = data[i];
           if ( code === obj.jvector_code ) {
             window.location = '/provinces/' + obj.id;
+          }
+        }
+      },
+      onRegionLabelShow: function( event, label, code ) {
+        label.html(provinceNames[code] + '<br>' + population[code]);
+      },
+      onMarkerLabelShow: function( event, label, code ) {
+        for ( var i = 0; i < data.length; i++ ) {
+          var obj = data[i];
+          if ( code === obj.name ) {
+            label.html(obj.name + '<br>' + obj.population);
           }
         }
       }
