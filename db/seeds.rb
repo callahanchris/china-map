@@ -1,3 +1,4 @@
+#encoding: UTF-8
 require 'open-uri'
 
 class ChinaScraper
@@ -84,7 +85,7 @@ class ChinaScraper
 
       province.territorial_designation = province.territorial_designation.split(' ').map(&:capitalize).join(' ')
       
-      if province.name != "Tibet Autonomous Region"
+      if province.name != "Tibet"
         province.latitude = page.search("span.latitude")[0].text
         province.longitude = page.search("span.longitude")[0].text
       end
