@@ -36,7 +36,7 @@ var showPopulation = function( data, provinceNames, population ) {
     series: {
       regions: [{
         values: population,
-        scale: ['#FFFFFF', '#FF2A2A'],
+        scale: ['#FFFFFF', '#FF0000'],
         max: 100000000
       }]
     },
@@ -143,6 +143,7 @@ showArea = function( data, provinceNames, areaKmSq ) {
   });
 },
 
+
 clearMap = function() {
   $( '#map' ).contents().remove();
 },
@@ -162,9 +163,9 @@ addCommasToInt = function( int ) {
 },
 
 monetize = function( int ) {
-  return "$" + addCommasToInt(int);
+  return "$" + addCommasToInt( int );
 };
 
 kilometerize = function( int ) {
-  return addCommasToInt(int) + " km2";
+  return addCommasToInt( int ) + " km&#178;";
 };
