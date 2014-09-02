@@ -93,12 +93,17 @@ class ChinaScraper
       if !%w{ Beijing Chongqing Shanghai Tianjin Hong\ Kong Macau }.include?(province.name)
         province.capital = page.search("tr.mergedtoprow a")[0].text
       end
+      
+      area_info = page.search("tr.mergedrow").select {|t| t.text.match(/km2/i) }
 
       if %w{ Hong\ Kong Macau }.include?(province.name)
-        province.area_km_sq = page.search("tr.mergedrow").find {|t| t.text.match(/km2/i) }.text.split(' ')[2].gsub(',', '')[0..-5].to_i
+        province.area_km_sq = area_info.first.text.split(/\s| /)[4].gsub(',', '').to_i
+        province.population_density = page.search("tr.mergedbottomrow").select {|t| t.text.match(/km2/i) }.first.text.split(/\s|\[/)[2].gsub(',', '').to_i
         province.population = page.search("tr.mergedrow td").find {|td| td.text.match(/\d{3},\d{3}/) }.text.gsub(',', '').split(/\[/).first.to_i
       else
-        province.area_km_sq = page.search("tr.mergedrow").find {|t| t.text.match(/km2/i) }.text.split(' ')[1].gsub(',', '')[0..-5].to_i
+        province.area_km_sq = area_info.first.text.split(/\s| /)[3].gsub(',', '').to_i
+        province.population_density = area_info.last.text.split(/\s| |\//)[3].gsub(',', '').to_i
+        # province.area_km_sq = area_info.first.text.split(' ')[1].gsub(',', '')[0..-5].to_i
         province.population = page.search("tr.mergedrow").find {|tr| tr.text.match(/\d{3},\d{3}\n/) }.text.split(' ')[1].gsub(',', '').to_i
       end
 
