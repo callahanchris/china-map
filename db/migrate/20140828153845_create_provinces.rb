@@ -9,8 +9,10 @@ class CreateProvinces < ActiveRecord::Migration
       t.string :capital
       t.integer :area_km_sq
       t.integer :population
+      t.integer :population_density
       t.integer :gdp_cny
       t.integer :gdp_usd
+      t.integer :gdp_per_capita
       t.string :jvector_code
 
       t.timestamps

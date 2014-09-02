@@ -145,8 +145,6 @@ class ChinaScraper
 
       if %w{ Guangdong Hubei }.include?(province.name)
         gdp_per_cap = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s|\$/)
-      elsif %w{ Beijing Chongqing }.include?(province.name)
-        gdp_per_cap = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(' ')
       elsif %w{ Shanghai }.include?(province.name)
         gdp_per_cap = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\$|US/)
       elsif %w{ Tianjin }.include?(province.name)
@@ -154,7 +152,7 @@ class ChinaScraper
       elsif %w{ Hong\ Kong Macau }.include?(province.name)
         gdp_per_cap = page.search("tr.mergedbottomrow td").select {|tr| tr.text.match(/\$/) }.last.text.split(/\s|\$|\[/)
       else
-        gdp_per_cap = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(' ')
+        gdp_per_cap = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(' ')
       end
       
       if %w{ Hong\ Kong Macau }.include?(province.name)

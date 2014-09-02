@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140902204826) do
+ActiveRecord::Schema.define(version: 20140828153845) do
 
   create_table "provinces", force: true do |t|
     t.string   "name"
@@ -22,14 +22,13 @@ ActiveRecord::Schema.define(version: 20140902204826) do
     t.string   "capital"
     t.integer  "area_km_sq"
     t.integer  "population"
+    t.integer  "population_density"
     t.integer  "gdp_cny"
     t.integer  "gdp_usd"
+    t.integer  "gdp_per_capita"
     t.string   "jvector_code"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "population_density"
-    t.integer  "gdp_per_capita"
-    t.string   "iso_code"
   end
 
 end
