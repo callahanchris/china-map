@@ -103,7 +103,6 @@ class ChinaScraper
       else
         province.area_km_sq = area_info.first.text.split(/\s| /)[3].gsub(',', '').to_i
         province.population_density = area_info.last.text.split(/\s| |\//)[3].gsub(',', '').to_i
-        # province.area_km_sq = area_info.first.text.split(' ')[1].gsub(',', '')[0..-5].to_i
         province.population = page.search("tr.mergedrow").find {|tr| tr.text.match(/\d{3},\d{3}\n/) }.text.split(' ')[1].gsub(',', '').to_i
       end
 

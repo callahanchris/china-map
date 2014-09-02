@@ -115,7 +115,7 @@ showPopulationDensity = function( data, provinceNames, popDensity ) {
       for ( var i = 0; i < data.length; i++ ) {
         var obj = data[i];
         if ( code === obj.name ) {
-          label.html( obj.name + '<br>' + densitize( obj.popDensity ) );
+          label.html( obj.name + '<br>' + densitize( obj.population_density ) );
         }
       }
     }
