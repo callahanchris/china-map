@@ -105,7 +105,6 @@ class ChinaScraper
       # Consider updating to more recent GDP data:
       # http://en.wikipedia.org/wiki/List_of_Chinese_administrative_divisions_by_GDP
 
-      binding.pry
       if %w{ Beijing Chongqing }.include?(province.name)
         monetary_info = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| /)
       elsif %w{ Shanghai Tianjin }.include?(province.name)
