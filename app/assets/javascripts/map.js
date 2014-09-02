@@ -1,4 +1,23 @@
 $( function() {
+
+  var addCommasToInt = function( int ) {
+    var numString = int.toString(),
+        newString = "";
+
+    for ( var i = 0; i < numString.length; i++ ) {
+      newString += numString[i];
+      if ( ( numString.length - i - 1 ) % 3 === 0 && i !== numString.length - 1 ) {
+        newString += ",";
+      }
+    }
+
+    return newString;
+  };
+
+  var monetize = function( int ) {
+    return "$" + addCommasToInt(int);
+  };
+
   $.getJSON( '/provinces', function( data ) {
     var population = {},
         gdpUsd = {},
@@ -31,16 +50,16 @@ $( function() {
         "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
       },
 
-      onRegionClick: function( event, code ) {
-        for ( var i = 0; i < data.length; i++ ) {
-          var obj = data[i];
-          if ( code === obj.jvector_code ) {
-            window.location = '/provinces/' + obj.id;
-          }
-        }
-      },
+      // onRegionClick: function( event, code ) {
+      //   for ( var i = 0; i < data.length; i++ ) {
+      //     var obj = data[i];
+      //     if ( code === obj.jvector_code ) {
+      //       window.location = '/provinces/' + obj.id;
+      //     }
+      //   }
+      // },
       onRegionLabelShow: function( event, label, code ) {
-        label.html(provinceNames[code] + '<br>' + population[code]);
+        label.html( provinceNames[code] + '<br>' + addCommasToInt(population[code]) );
       },
       onMarkerLabelShow: function( event, label, code ) {
         for ( var i = 0; i < data.length; i++ ) {
