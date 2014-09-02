@@ -1,4 +1,4 @@
-#encoding: UTF-8
+# encoding: UTF-8
 require 'open-uri'
 
 class ChinaScraper
@@ -105,7 +105,7 @@ class ChinaScraper
       # Consider updating to more recent GDP data:
       # http://en.wikipedia.org/wiki/List_of_Chinese_administrative_divisions_by_GDP
 
-      
+      binding.pry
       if %w{ Beijing Chongqing }.include?(province.name)
         monetary_info = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| /)
       elsif %w{ Shanghai Tianjin }.include?(province.name)
@@ -137,6 +137,26 @@ class ChinaScraper
         else
           province.gdp_usd = (monetary_info[4].to_f * 1_000_000_000).to_i
         end
+      end
+
+      if %w{ Guangdong Hubei }.include?(province.name)
+        gdp_per_cap = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s|\$/)
+      elsif %w{ Beijing Chongqing }.include?(province.name)
+        gdp_per_cap = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(' ')
+      elsif %w{ Shanghai }.include?(province.name)
+        gdp_per_cap = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\$|US/)
+      elsif %w{ Tianjin }.include?(province.name)
+        gdp_per_cap = page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\)/)
+      elsif %w{ Hong\ Kong Macau }.include?(province.name)
+        gdp_per_cap = page.search("tr.mergedbottomrow td").select {|tr| tr.text.match(/\$/) }.last.text.split(/\s|\$|\[/)
+      else
+        gdp_per_cap = page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(' ')
+      end
+      
+      if %w{ Hong\ Kong Macau }.include?(province.name)
+        province.gdp_per_capita = gdp_per_cap[1].gsub(',', '').to_i
+      else
+        province.gdp_per_capita = gdp_per_cap[3].gsub(',', '').to_i
       end
 
       if self.class.jvector_keys.include?(province.name)
