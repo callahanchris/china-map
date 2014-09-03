@@ -46,7 +46,7 @@ $( function() {
 var showPopulation = function( data, provinceNames, population ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
-    backgroundColor: '#eee',
+    backgroundColor: 'none',
     series: {
       regions: [{
         values: population,
@@ -90,7 +90,7 @@ var showPopulation = function( data, provinceNames, population ) {
 showPopulationDensity = function( data, provinceNames, popDensity ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
-    backgroundColor: '#eee',
+    backgroundColor: 'none',
     series: {
       regions: [{
         values: popDensity,
@@ -125,7 +125,7 @@ showPopulationDensity = function( data, provinceNames, popDensity ) {
 showGdp = function( data, provinceNames, gdpUsd ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
-    backgroundColor: '#eee',
+    backgroundColor: 'none',
     series: {
       regions: [{
         values: gdpUsd,
@@ -160,7 +160,7 @@ showGdp = function( data, provinceNames, gdpUsd ) {
 showGdpPerCap = function( data, provinceNames, gdpPerCap ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
-    backgroundColor: '#eee',
+    backgroundColor: 'none',
     series: {
       regions: [{
         values: gdpPerCap,
@@ -195,7 +195,7 @@ showGdpPerCap = function( data, provinceNames, gdpPerCap ) {
 showArea = function( data, provinceNames, areaKmSq ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
-    backgroundColor: '#eee',
+    backgroundColor: 'none',
     series: {
       regions: [{
         values: areaKmSq,

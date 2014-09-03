@@ -13,5 +13,6 @@
  *= require bootstrap_and_overrides
  *= require jquery-jvectormap-1.2.2
  *= require map
+ *= require index
  *= require_self
  */
