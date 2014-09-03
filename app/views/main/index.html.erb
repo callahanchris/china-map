@@ -1,13 +1,14 @@
 <div class="row">
   <div class="container">
     <div class="text-center">
-      <h1>China Map</h1>
+      <h1>A Map of China</h1>
       <div class="buttons">
-        <button id="population">Population</button>
-        <button id="pop-density">Population Density</button>
-        <button id="gdp-usd">GDP (USD)</button>
-        <button id="gdp-per-cap">GDP Per Capita (USD)</button>
-        <button id="area-km-sq">Area (km&#178;)</button>
+        <span id="population">Population</span>
+        <span id="pop-density">Pop Density</span>
+        <span id="gdp-usd">GDP (USD)</span>
+        <span id="gdp-per-cap">GDP Per Capita (USD)</span>
+        <span id="area-km-sq">Area (km&#178;)</span>
+        <%= link_to "About", about_path %>
       </div>
     </div>
     <div id="map" class="center-block" style="width: 960px; height: 720px"></div>

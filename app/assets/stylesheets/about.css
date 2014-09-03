@@ -1,0 +1,21 @@
+#about {
+  width: 600px;
+  background: none repeat scroll 0% 0% #F3F3FA;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-family: "Helvetica";
+  font-size: 16px;
+}
+
+#home a {
+  font-size: 48px;
+}
+
+#about-sources a {
+  margin: 0px;
+  font-family: "Helvetica";
+  color: black;
+  font-size: 16px;
+}
