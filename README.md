@@ -2,6 +2,8 @@
 
 This is a small side project I put together with the goal of making an interactive JavaScript map of China. The map is a [jVectorMap](http://jvectormap.com/), and the data comes from the Wikipedia articles on each Chinese province.
 
+Visit [amapofchina.herokuapp.com](http://amapofchina.herokuapp.com/) to see it in action!
+
 # Application Setup
 
 * Run `bundle`
