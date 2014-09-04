@@ -1,4 +1,8 @@
 $( function() {
+  loadMap();
+});
+
+var loadMap = function() {
   $.getJSON( '/provinces', function( data ) {
     var provinceNames = {},
         population = {},
@@ -41,9 +45,9 @@ $( function() {
       showArea( data, provinceNames, areaKmSq );
     });
   });
-});
+},
 
-var showPopulation = function( data, provinceNames, population ) {
+showPopulation = function( data, provinceNames, population ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
     backgroundColor: 'none',
