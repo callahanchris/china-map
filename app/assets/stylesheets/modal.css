@@ -3,23 +3,23 @@
   padding-bottom: 10px;
   margin-top: 50px;
   margin-bottom: 50px;
-  font-family: "Helvetica";
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
 }
 
 .modal-content {
-  background-color: #F3F3F9;
+  background-color: #EEF2FB;
 }
 
 .modal-title {
-  font-family: 'Permanent Marker', 'Helvetica';
+  font-family: 'Permanent Marker', sans-serif;
   font-size: 36px;
   color: red;
 }
 
 #about-sources a {
   margin: 0px;
-  font-family: "Helvetica";
+  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   color: black;
   font-size: 16px;

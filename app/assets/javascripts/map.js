@@ -54,7 +54,7 @@ showPopulation = function( data, provinceNames, population ) {
     series: {
       regions: [{
         values: population,
-        scale: ['#FFFFFF', '#FF0000'],
+        scale: ['#FFF0F0', '#F5442C'],
         max: 100000000
       }]
     },
@@ -68,15 +68,6 @@ showPopulation = function( data, provinceNames, population ) {
       "Hong Kong": {latLng: [22.396428, 114.109497], name: 'Hong Kong'},
       "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
     },
-
-    // onRegionClick: function( event, code ) {
-    //   for ( var i = 0; i < data.length; i++ ) {
-    //     var obj = data[i];
-    //     if ( code === obj.jvector_code ) {
-    //       window.location = '/provinces/' + obj.id;
-    //     }
-    //   }
-    // },
     onRegionLabelShow: function( event, label, code ) {
       label.html( provinceNames[code] + '<br>' + addCommasToInt( population[code] ) );
     },
@@ -98,8 +89,8 @@ showPopulationDensity = function( data, provinceNames, popDensity ) {
     series: {
       regions: [{
         values: popDensity,
-        scale: ['#FFFFFF', '#FF0000'],
-        max: 1000
+        scale: ['#FFF0F0', '#F5442C'],
+        max: 600
       }]
     },
     markerStyle: {
@@ -133,7 +124,7 @@ showGdp = function( data, provinceNames, gdpUsd ) {
     series: {
       regions: [{
         values: gdpUsd,
-        scale: ['#FFFFFF', '#FF0000'],
+        scale: ['#FFF0F0', '#F5442C'],
         max: 800000000000
       }]
     },
@@ -168,7 +159,7 @@ showGdpPerCap = function( data, provinceNames, gdpPerCap ) {
     series: {
       regions: [{
         values: gdpPerCap,
-        scale: ['#FFFFFF', '#FF0000'],
+        scale: ['#FFF0F0', '#F5442C'],
         max: 14000
       }]
     },
@@ -203,7 +194,7 @@ showArea = function( data, provinceNames, areaKmSq ) {
     series: {
       regions: [{
         values: areaKmSq,
-        scale: ['#FFFFFF', '#FF0000'],
+        scale: ['#FFF0F0', '#F5442C'],
         max: 1500000
       }]
     },
