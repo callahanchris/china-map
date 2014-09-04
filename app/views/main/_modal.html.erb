@@ -1,6 +1,6 @@
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content text-center">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" id="myModalLabel">About</h4>
@@ -9,11 +9,12 @@
         <p id="about-me">
           This site was created by Chris Callahan. You can find him via:<br><%= link_to "blog", "http://callahanchris.github.io", target: "_blank" %><%= link_to "github", "https://github.com/callahanchris", target: "_blank" %><%= link_to "twitter", "https://twitter.com/_c_cal", target: "_blank" %>
         </p>
+        <br>
         <p id="about-sources">
-          The background image is of the western slope of Chang Bai Mountain in Jilin Province. It is used under the <%= link_to "Creative Commons license", "https://creativecommons.org/licenses/by/2.0/legalcode" %>.
-          <br>
+          The image is of the western slope of Chang Bai Mountain in Jilin Province, and was taken by <%= link_to " See-ming Lee", "https://www.flickr.com/photos/seeminglee/14606928997" %>. It is used under the <%= link_to "Creative Commons license", "https://creativecommons.org/licenses/by/2.0/legalcode" %>.
+          <br><br>
           The map of China is from the <%= link_to "jVectorMap", "http://jvectormap.com/" %> library, developed by Kirill Lebedev.
-          <br>
+          <br><br>
           All data displayed comes from <%= link_to "Wikipedia", "http://www.wikipedia.org/" %>.
         </p>
       </div>
