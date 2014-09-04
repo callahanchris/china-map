@@ -19,3 +19,7 @@ group :development do
   gem 'pry'
   gem 'pry-rails'
 end
+
+group :production do
+  gem 'pg'
+end
