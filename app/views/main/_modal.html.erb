@@ -1,8 +1,11 @@
-<div class="row">
-  <div class="container">
-    <div class="text-center">
-      <h1 id="home"><%= link_to "A Map of China", root_path %></h1>
-      <div class="center-block" id="about">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">About</h4>
+      </div>
+      <div class="modal-body">
         <p id="about-me">
           This site was created by Chris Callahan. You can find him via:<br><%= link_to "blog", "http://callahanchris.github.io", target: "_blank" %><%= link_to "github", "https://github.com/callahanchris", target: "_blank" %><%= link_to "twitter", "https://twitter.com/_c_cal", target: "_blank" %>
         </p>
