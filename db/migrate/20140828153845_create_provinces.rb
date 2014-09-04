@@ -7,11 +7,11 @@ class CreateProvinces < ActiveRecord::Migration
       t.string :latitude
       t.string :longitude
       t.string :capital
-      t.bigint :area_km_sq
-      t.bigint :population
+      t.column :area_km_sq, 'bigint'
+      t.column :population, 'bigint'
       t.integer :population_density
-      t.bigint :gdp_cny
-      t.bigint :gdp_usd
+      t.column :gdp_cny, 'bigint'
+      t.column :gdp_usd, 'bigint'
       t.integer :gdp_per_capita
       t.string :jvector_code
 
