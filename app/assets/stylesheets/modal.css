@@ -12,15 +12,19 @@
 }
 
 .modal-title {
-  font-family: 'Permanent Marker', sans-serif;
+  font-family: 'Special Elite', cursive;
   font-size: 36px;
   color: red;
+  padding-left: 15px;
 }
 
 #about-sources a {
   margin: 0px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  color: black;
+  font-family: 'Special Elite', cursive;
+  color: red;
   font-size: 16px;
+}
+
+#about-sources a:hover {
+  color: #3B8A00;
 }
