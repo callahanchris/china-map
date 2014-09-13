@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
   root "main#index"
-  resources :provinces, only: [:index]
+  resources :regions, only: [:index]
 end

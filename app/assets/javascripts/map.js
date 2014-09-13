@@ -3,8 +3,8 @@ $( function() {
 });
 
 var loadMap = function() {
-  $.getJSON( '/provinces', function( data ) {
-    var provinceNames = {},
+  $.getJSON( '/regions', function( data ) {
+    var regionNames = {},
         population = {},
         popDensity = {},
         gdpUsd = {},
@@ -12,7 +12,7 @@ var loadMap = function() {
         areaKmSq = {};
 
     for ( var i = 0; i < data.length; i++ ) {
-      provinceNames[data[i]["jvector_code"]] = data[i]["name"];
+      regionNames[data[i]["jvector_code"]] = data[i]["name"];
       population[data[i]["jvector_code"]] = data[i]["population"];
       popDensity[data[i]["jvector_code"]] = data[i]["population_density"];
       gdpUsd[data[i]["jvector_code"]] = data[i]["gdp_usd"];
@@ -22,32 +22,32 @@ var loadMap = function() {
 
     $( '#population' ).on( 'click', function() {
       clearMap();
-      showPopulation( data, provinceNames, population );
+      showPopulation( data, regionNames, population );
     });
 
     $( '#pop-density' ).on( 'click', function() {
       clearMap();
-      showPopulationDensity( data, provinceNames, popDensity );
+      showPopulationDensity( data, regionNames, popDensity );
     });
 
     $( '#gdp-usd' ).on( 'click', function() {
       clearMap();
-      showGdp( data, provinceNames, gdpUsd );
+      showGdp( data, regionNames, gdpUsd );
     });
 
     $( '#gdp-per-cap' ).on( 'click', function() {
       clearMap();
-      showGdpPerCap( data, provinceNames, gdpPerCap );
+      showGdpPerCap( data, regionNames, gdpPerCap );
     });
 
     $( '#area-km-sq' ).on( 'click', function() {
       clearMap();
-      showArea( data, provinceNames, areaKmSq );
+      showArea( data, regionNames, areaKmSq );
     });
   });
 },
 
-showPopulation = function( data, provinceNames, population ) {
+showPopulation = function( data, regionNames, population ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
     backgroundColor: 'none',
@@ -69,7 +69,7 @@ showPopulation = function( data, provinceNames, population ) {
       "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
     },
     onRegionLabelShow: function( event, label, code ) {
-      label.html( provinceNames[code] + '<br>' + addCommasToInt( population[code] ) );
+      label.html( regionNames[code] + '<br>' + addCommasToInt( population[code] ) );
     },
     onMarkerLabelShow: function( event, label, code ) {
       for ( var i = 0; i < data.length; i++ ) {
@@ -82,7 +82,7 @@ showPopulation = function( data, provinceNames, population ) {
   });
 },
 
-showPopulationDensity = function( data, provinceNames, popDensity ) {
+showPopulationDensity = function( data, regionNames, popDensity ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
     backgroundColor: 'none',
@@ -104,7 +104,7 @@ showPopulationDensity = function( data, provinceNames, popDensity ) {
       "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
     },
     onRegionLabelShow: function( event, label, code ) {
-      label.html( provinceNames[code] + '<br>' + densitize( popDensity[code] ) );
+      label.html( regionNames[code] + '<br>' + densitize( popDensity[code] ) );
     },
     onMarkerLabelShow: function( event, label, code ) {
       for ( var i = 0; i < data.length; i++ ) {
@@ -117,7 +117,7 @@ showPopulationDensity = function( data, provinceNames, popDensity ) {
   });
 },
 
-showGdp = function( data, provinceNames, gdpUsd ) {
+showGdp = function( data, regionNames, gdpUsd ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
     backgroundColor: 'none',
@@ -139,7 +139,7 @@ showGdp = function( data, provinceNames, gdpUsd ) {
       "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
     },
     onRegionLabelShow: function( event, label, code ) {
-      label.html( provinceNames[code] + '<br>' + monetize( gdpUsd[code] ) );
+      label.html( regionNames[code] + '<br>' + monetize( gdpUsd[code] ) );
     },
     onMarkerLabelShow: function( event, label, code ) {
       for ( var i = 0; i < data.length; i++ ) {
@@ -152,7 +152,7 @@ showGdp = function( data, provinceNames, gdpUsd ) {
   });
 },
 
-showGdpPerCap = function( data, provinceNames, gdpPerCap ) {
+showGdpPerCap = function( data, regionNames, gdpPerCap ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
     backgroundColor: 'none',
@@ -174,7 +174,7 @@ showGdpPerCap = function( data, provinceNames, gdpPerCap ) {
       "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
     },
     onRegionLabelShow: function( event, label, code ) {
-      label.html( provinceNames[code] + '<br>' + monetize( gdpPerCap[code] ) );
+      label.html( regionNames[code] + '<br>' + monetize( gdpPerCap[code] ) );
     },
     onMarkerLabelShow: function( event, label, code ) {
       for ( var i = 0; i < data.length; i++ ) {
@@ -187,7 +187,7 @@ showGdpPerCap = function( data, provinceNames, gdpPerCap ) {
   });
 },
 
-showArea = function( data, provinceNames, areaKmSq ) {
+showArea = function( data, regionNames, areaKmSq ) {
   $( '#map' ).vectorMap({
     map: 'cn_merc_en',
     backgroundColor: 'none',
@@ -209,7 +209,7 @@ showArea = function( data, provinceNames, areaKmSq ) {
       "Macau": {latLng: [22.198745, 113.543873], name: 'Macau'}
     },
     onRegionLabelShow: function( event, label, code ) {
-      label.html( provinceNames[code] + '<br>' + kilometerize( areaKmSq[code] ) );
+      label.html( regionNames[code] + '<br>' + kilometerize( areaKmSq[code] ) );
     },
     onMarkerLabelShow: function( event, label, code ) {
       for ( var i = 0; i < data.length; i++ ) {

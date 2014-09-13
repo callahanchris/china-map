@@ -1,6 +1,6 @@
-class CreateProvinces < ActiveRecord::Migration
+class CreateRegions < ActiveRecord::Migration
   def change
-    create_table :provinces do |t|
+    create_table :regions do |t|
       t.string :name
       t.string :url
       t.string :territorial_designation

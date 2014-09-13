@@ -1,5 +1,5 @@
 class MainController < ApplicationController
   def index
-    @provinces = Province.all
+    @regions = Region.all
   end
 end

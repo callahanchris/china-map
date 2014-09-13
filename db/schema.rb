@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20140828153845) do
 
-  create_table "provinces", force: true do |t|
+  create_table "regions", force: true do |t|
     t.string   "name"
     t.string   "url"
     t.string   "territorial_designation"

@@ -1,4 +1,4 @@
-class Province < ActiveRecord::Base
+class Region < ActiveRecord::Base
 
   before_create :assign_name_from_url
 
