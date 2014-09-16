@@ -34,12 +34,21 @@ class ChinaScraper
     Region.all.each do |region|
       puts "Scraping #{region.name}..."
       page = Nokogiri::HTML(open(region.url))
-      RegionScraper.new(region, page).compute
+      case region.name
+      when "Hong Kong", "Macau"
+        SARScraper.new(region, page).compute
+      when "Beijing", "Chongqing", "Shanghai", "Tianjin"
+        MunicipalityScraper.new(region, page).compute
+      when "Guangxi", "Inner Mongolia", "Ningxia", "Xinjiang", "Tibet"
+        AutonomousRegionScraper.new(region, page).compute
+      else
+        ProvinceScraper.new(region, page).compute
+      end 
     end
   end
 end
 
-class RegionScraper
+module RegionScraper
   attr_reader :region, :page
 
   JVECTOR_REGION_CODES = {
@@ -76,11 +85,11 @@ class RegionScraper
     "Zhejiang" => "CN-33"
   }
 
-  def self.jvector_codes
+  def jvector_codes
     JVECTOR_REGION_CODES
   end
 
-  def self.jvector_keys
+  def jvector_keys
     jvector_codes.keys
   end
 
@@ -143,6 +152,7 @@ class RegionScraper
       region.population_density = page.search("tr.mergedbottomrow").select {|t| t.text.match(/km2/i) }.first.text.split(/\s|\[/)[2].gsub(',', '').to_i
       region.population = page.search("tr.mergedrow td").find {|td| td.text.match(/\d{3},\d{3}/) }.text.gsub(',', '').split(/\[/).first.to_i
     else
+      # region.area_km_sq = area_info.first.text.match(/[\d,]+/).to_s.gsub(',', '').to_i
       region.area_km_sq = area_info.first.text.split(/\s| /)[3].gsub(',', '').to_i
       region.population_density = area_info.last.text.split(/\s| |\//)[3].gsub(',', '').to_i
       region.population = page.search("tr.mergedrow").find {|tr| tr.text.match(/\d{3},\d{3}\n/) }.text.split(' ')[1].gsub(',', '').to_i
@@ -175,12 +185,28 @@ class RegionScraper
       region.gdp_per_capita = gdp_per_cap[3].gsub(',', '').to_i
     end
 
-    if self.class.jvector_keys.include?(region.name)
-      region.jvector_code = self.class.jvector_codes[region.name]
+    if jvector_keys.include?(region.name)
+      region.jvector_code = jvector_codes[region.name]
     end
 
     region.save
   end
 end
+
+class ProvinceScraper
+  include RegionScraper
+end
+
+class AutonomousRegionScraper
+  include RegionScraper
+end
+
+class MunicipalityScraper
+  include RegionScraper
+end
+
+class SARScraper
+  include RegionScraper
+end  
 
 ChinaScraper.new
