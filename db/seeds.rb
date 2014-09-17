@@ -102,7 +102,8 @@ module RegionAssembler
     assign_lat_lng
     assign_capital
     assign_area_info
-    assign_gdp
+    assign_gdp_usd
+    assign_gdp_cny
     assign_gdp_per_cap
     assign_jvector_code
     region.save
@@ -113,11 +114,68 @@ module RegionAssembler
   end
 
   def monetary_info
-    if %w{ Beijing Chongqing }.include?(region.name)
-      @monetary_info ||= page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| /)
-    elsif %w{ Shanghai Tianjin }.include?(region.name)
-      @monetary_info ||= page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| |cny|usd|\$/i)
-    elsif %w{ Guangdong }.include?(region.name)
+    @monetary_info ||= page.search("tr.mergedtoprow td").find {|tr| tr.text.match(/cny/i) }.text.split(' ')
+  end
+
+  def gdp_per_cap
+    @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(' ')
+  end
+
+  def title_caps(string)
+    string.split(' ').map(&:capitalize).join(' ')
+  end
+
+  def assign_territorial_designation
+    region.territorial_designation = title_caps(page.search("span.category a").text)
+  end
+
+  def assign_lat_lng
+    region.latitude = page.search("span.latitude")[0].text
+    region.longitude = page.search("span.longitude")[0].text
+  end
+
+  def assign_capital
+    region.capital = page.search("tr.mergedtoprow a")[0].text
+  end
+
+  def assign_area_info
+    # region.area_km_sq = area_info.first.text.match(/[\d,]+/).to_s.gsub(',', '').to_i
+    region.area_km_sq = area_info.first.text.split(/\s| /)[3].gsub(',', '').to_i
+    region.population_density = area_info.last.text.split(/\s| |\//)[3].gsub(',', '').to_i
+    region.population = page.search("tr.mergedrow").find {|tr| tr.text.match(/\d{3},\d{3}\n/) }.text.split(' ')[1].gsub(',', '').to_i
+  end
+
+  def assign_gdp_cny
+  # There is an error in the GDP listing on the Jiangxi wiki page http://en.wikipedia.org/wiki/Jiangxi
+    if monetary_info[2].match(/trillion/) || region.name == "Jiangxi"
+      region.gdp_cny = (monetary_info[1].to_f * 1_000_000_000_000).to_i
+    else
+      region.gdp_cny = (monetary_info[1].to_f * 1_000_000_000).to_i
+    end
+  end
+
+  def assign_gdp_usd
+    if monetary_info[5].match(/trillion/)
+      region.gdp_usd = (monetary_info[4].to_f * 1_000_000_000_000).to_i
+    else
+      region.gdp_usd = (monetary_info[4].to_f * 1_000_000_000).to_i
+    end
+  end
+
+  def assign_gdp_per_cap
+    region.gdp_per_capita = gdp_per_cap[3].gsub(',', '').to_i
+  end
+
+  def assign_jvector_code
+    region.jvector_code = jvector_codes[region.name]
+  end
+end
+
+class ProvinceAssembler
+  include RegionAssembler
+
+  def monetary_info
+    if region.name == "Guangdong"
       @monetary_info ||= page.search("tr.mergedtoprow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| |\$/i)
     else
       @monetary_info ||= page.search("tr.mergedtoprow td").find {|tr| tr.text.match(/cny/i) }.text.split(' ')
@@ -127,24 +185,14 @@ module RegionAssembler
   def gdp_per_cap
     if %w{ Guangdong Hubei }.include?(region.name)
       @gdp_per_cap ||= page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s|\$/)
-    elsif %w{ Shanghai }.include?(region.name)
-      @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\$|US/)
-    elsif %w{ Tianjin }.include?(region.name)
-      @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\)/)
     else
       @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(' ')
     end
   end
+end
 
-  def assign_territorial_designation
-    if %w{ Hong\ Kong Macau }.include?(region.name)
-      region.territorial_designation = page.search("tr td a").find {|a| a.text.match(/special/i) }.text.split(" of ").first
-    else
-      region.territorial_designation = page.search("span.category a").text
-    end
-
-    region.territorial_designation = region.territorial_designation.split(' ').map(&:capitalize).join(' ')
-  end
+class AutonomousRegionAssembler
+  include RegionAssembler
 
   def assign_lat_lng
     if region.name != "Tibet"
@@ -152,75 +200,31 @@ module RegionAssembler
       region.longitude = page.search("span.longitude")[0].text
     end
   end
-
-  def assign_capital
-    if !%w{ Beijing Chongqing Shanghai Tianjin Hong\ Kong Macau }.include?(region.name)
-      region.capital = page.search("tr.mergedtoprow a")[0].text
-    end
-  end
-
-  def assign_area_info
-    if %w{ Hong\ Kong Macau }.include?(region.name)
-      region.area_km_sq = area_info.first.text.split(/\s| /)[4].gsub(',', '').to_i
-      region.population_density = page.search("tr.mergedbottomrow").select {|t| t.text.match(/km2/i) }.first.text.split(/\s|\[/)[2].gsub(',', '').to_i
-      region.population = page.search("tr.mergedrow td").find {|td| td.text.match(/\d{3},\d{3}/) }.text.gsub(',', '').split(/\[/).first.to_i
-    else
-      # region.area_km_sq = area_info.first.text.match(/[\d,]+/).to_s.gsub(',', '').to_i
-      region.area_km_sq = area_info.first.text.split(/\s| /)[3].gsub(',', '').to_i
-      region.population_density = area_info.last.text.split(/\s| |\//)[3].gsub(',', '').to_i
-      region.population = page.search("tr.mergedrow").find {|tr| tr.text.match(/\d{3},\d{3}\n/) }.text.split(' ')[1].gsub(',', '').to_i
-    end
-  end
-
-  def assign_gdp
-    if %w{ Hong\ Kong Macau }.include?(region.name)
-      if monetary_info[2].match(/trillion/)
-        region.gdp_usd = (monetary_info[1].to_f * 1_000_000_000_000).to_i
-      else
-        region.gdp_usd = (monetary_info[1].to_f * 1_000_000_000).to_i
-      end
-    else
-    # There is an error in the GDP listing on the Jiangxi wiki page http://en.wikipedia.org/wiki/Jiangxi
-      if monetary_info[2].match(/trillion/) || region.name == "Jiangxi"
-        region.gdp_cny = (monetary_info[1].to_f * 1_000_000_000_000).to_i
-      else
-        region.gdp_cny = (monetary_info[1].to_f * 1_000_000_000).to_i
-      end
-
-      if monetary_info[5].match(/trillion/)
-        region.gdp_usd = (monetary_info[4].to_f * 1_000_000_000_000).to_i
-      else
-        region.gdp_usd = (monetary_info[4].to_f * 1_000_000_000).to_i
-      end
-    end
-  end
-
-  def assign_gdp_per_cap
-    if %w{ Hong\ Kong Macau }.include?(region.name)
-      region.gdp_per_capita = gdp_per_cap[1].gsub(',', '').to_i
-    else
-      region.gdp_per_capita = gdp_per_cap[3].gsub(',', '').to_i
-    end
-  end
-
-  def assign_jvector_code
-    if jvector_keys.include?(region.name)
-      region.jvector_code = jvector_codes[region.name]
-    end
-  end
-
-end
-
-class ProvinceAssembler
-  include RegionAssembler
-end
-
-class AutonomousRegionAssembler
-  include RegionAssembler
 end
 
 class MunicipalityAssembler
   include RegionAssembler
+
+  def monetary_info
+    if %w{ Beijing Chongqing }.include?(region.name)
+      @monetary_info ||= page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| /)
+    else %w{ Shanghai Tianjin }.include?(region.name)
+      @monetary_info ||= page.search("tr.mergedrow td").find {|tr| tr.text.match(/cny/i) }.text.split(/\s| |cny|usd|\$/i)
+    end
+  end
+
+  def gdp_per_cap
+    if region.name == "Shanghai"
+      @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\$|US/)
+    elsif region.name == "Tianjin"
+      @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(/\s|\)/)
+    else
+      @gdp_per_cap ||= page.search("tr.mergedrow td").select {|tr| tr.text.match(/cny/i) }.last.text.split(' ')
+    end
+  end
+
+  def assign_capital
+  end
 end
 
 class SARAssembler
@@ -232,6 +236,37 @@ class SARAssembler
 
   def gdp_per_cap
     @gdp_per_cap ||= page.search("tr.mergedbottomrow td").select {|tr| tr.text.match(/\$/) }.last.text.split(/\s|\$|\[/)
+  end
+
+  def assign_territorial_designation
+    region.territorial_designation = title_caps(page.search("tr td a").find {|a| a.text.match(/special/i) }.attributes["title"].value)
+  end
+
+  def assign_capital
+  end
+
+  def assign_area_info
+    region.area_km_sq = area_info.first.text.split(/\s| /)[4].gsub(',', '').to_i
+    region.population_density = page.search("tr.mergedbottomrow").select {|t| t.text.match(/km2/i) }.first.text.split(/\s|\[/)[2].gsub(',', '').to_i
+    region.population = page.search("tr.mergedrow td").find {|td| td.text.match(/\d{3},\d{3}/) }.text.gsub(',', '').split(/\[/).first.to_i
+  end
+
+  def assign_gdp_usd
+    if monetary_info[2].match(/trillion/)
+      region.gdp_usd = (monetary_info[1].to_f * 1_000_000_000_000).to_i
+    else
+      region.gdp_usd = (monetary_info[1].to_f * 1_000_000_000).to_i
+    end
+  end
+
+  def assign_gdp_cny
+  end
+
+  def assign_gdp_per_cap
+    region.gdp_per_capita = gdp_per_cap[1].gsub(',', '').to_i
+  end
+
+  def assign_jvector_code
   end
 end
 
