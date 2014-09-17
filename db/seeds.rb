@@ -48,9 +48,7 @@ class ChinaScraper
   end
 end
 
-module RegionAssembler
-  attr_reader :region, :page
-
+module JVectorable
   JVECTOR_REGION_CODES = {
     "Anhui" => "CN-34",
     "Beijing" => "CN-11",
@@ -92,6 +90,11 @@ module RegionAssembler
   def jvector_keys
     jvector_codes.keys
   end
+end
+
+module RegionAssembler
+  include JVectorable
+  attr_reader :region, :page
 
   def initialize(region, page)
     @region, @page = region, page
