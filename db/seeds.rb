@@ -36,19 +36,19 @@ class ChinaScraper
       page = Nokogiri::HTML(open(region.url))
       case region.name
       when "Hong Kong", "Macau"
-        SARScraper.new(region, page).compute
+        SARAssembler.new(region, page).compute
       when "Beijing", "Chongqing", "Shanghai", "Tianjin"
-        MunicipalityScraper.new(region, page).compute
+        MunicipalityAssembler.new(region, page).compute
       when "Guangxi", "Inner Mongolia", "Ningxia", "Xinjiang", "Tibet"
-        AutonomousRegionScraper.new(region, page).compute
+        AutonomousRegionAssembler.new(region, page).compute
       else
-        ProvinceScraper.new(region, page).compute
+        ProvinceAssembler.new(region, page).compute
       end 
     end
   end
 end
 
-module RegionScraper
+module RegionAssembler
   attr_reader :region, :page
 
   JVECTOR_REGION_CODES = {
@@ -193,20 +193,20 @@ module RegionScraper
   end
 end
 
-class ProvinceScraper
-  include RegionScraper
+class ProvinceAssembler
+  include RegionAssembler
 end
 
-class AutonomousRegionScraper
-  include RegionScraper
+class AutonomousRegionAssembler
+  include RegionAssembler
 end
 
-class MunicipalityScraper
-  include RegionScraper
+class MunicipalityAssembler
+  include RegionAssembler
 end
 
-class SARScraper
-  include RegionScraper
+class SARAssembler
+  include RegionAssembler
 end  
 
 ChinaScraper.new
