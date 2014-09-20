@@ -4,7 +4,7 @@ require 'open-uri'
 class ChinaScraper
   attr_accessor :region_links
 
-  def initialize
+  def run
     scrape_index
     make_regions
     scrape_all_regions
@@ -273,4 +273,4 @@ class SARAssembler
   end
 end
 
-ChinaScraper.new
+ChinaScraper.new.run
