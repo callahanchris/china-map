@@ -5,6 +5,11 @@
 }
 
 .jvectormap-zoomin, .jvectormap-zoomout {
-    padding: 1px;
-    line-height: 5px;
+    line-height: 7px;
+    padding-left: 3px;
+    font-weight: bold;
+    background: red;
+    color: yellow;
+    width: 15px;
+    height: 15px;
 }
