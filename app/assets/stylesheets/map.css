@@ -5,11 +5,21 @@
 }
 
 .jvectormap-zoomin, .jvectormap-zoomout {
-    line-height: 7px;
-    padding-left: 3px;
-    font-weight: bold;
-    background: red;
-    color: yellow;
-    width: 15px;
-    height: 15px;
+  line-height: 7px;
+  padding-left: 3px;
+  font-weight: bold;
+  background: red;
+  color: yellow;
+  width: 15px;
+  height: 15px;
+}
+
+.jvectormap-label {
+  border: solid 2px black;
+  background: #EEF2FB;
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  font-size: 14px;
+  padding: 5px;
 }
